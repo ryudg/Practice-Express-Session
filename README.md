@@ -39,10 +39,10 @@ app.use(session({ secret: "secret" }));
 # `connect-flash`
 
 > **flash**는 임시적으로 저장되는 메시지를 의미.
-
-- flash 메시지는 세션에 저장되어 다음 요청에서 사용 가능한 임시 메시지이다.
-- 주로, 리다이렉트 후에 사용자에게 표시되는 한번짜리 정보 또는 오류 메시지를 저장하는데 사용되는데, 예를 들어, 등록이 성공적으로 완료되었음을 나타내는 flash 메시지를 한 라우트에서 설정한 다음, 다른 라우트에서 flash 메시지를 사용자에게 표시할 수 있다.
-- 이것은 여러 요청 사이에서 사용자와 통신할 수 있도록 해줌으로써 유용합니다.
+>
+> - flash 메시지는 세션에 저장되어 다음 요청에서 사용 가능한 임시 메시지이다.
+> - 주로, 리다이렉트 후에 사용자에게 표시되는 한번짜리 정보 또는 오류 메시지를 저장하는데 사용되는데, 예를 들어, 등록이 성공적으로 완료되었음을 나타내는 flash 메시지를 한 라우트에서 설정한 다음, 다른 라우트에서 flash 메시지를 사용자에게 표시할 수 있다.
+> - 이것은 여러 요청 사이에서 사용자와 통신할 수 있도록 해줌으로써 유용합니다.
 
 - connect-flash는 Express 프레임워크에서 플래시 메시지를 지원하는 미들웨어다.
 - 플래시 메시지는 세션에 일회용 정보 또는 오류 메시지를 저장하는 방법입니다. 재전송 후에 사용자에게 표시된다.
@@ -86,3 +86,29 @@ app.listen(3000, () => {
 - 첫 번째 경로는 "success_msg" 키와 "This is a flash message" 값을 가진 flash 메시지를 설정.
 - 두 번째 경로에서는 flash 메시지를 검색하여 사용자에게 표시될 뷰 템플릿에 전달.
 - req.flash() 함수를 사용하여 flash 메시지를 가져옴.
+- connect-flash 미들웨어를 사용하면 req.flash 함수를 통해 플래시 메시지를 추가하고, res.locals 객체를 통해 플래시 메시지에 접근할 수 있다.
+
+### `res.locals`
+
+```javascript
+const express = require("express");
+const flash = require("connect-flash");
+const app = express();
+
+app.use(flash());
+
+app.post("/", (req, res) => {
+  req.flash("success_msg", "메시지가 성공적으로 저장되었습니다.");
+  res.redirect("/");
+});
+
+app.get("/", (req, res) => {
+  res.locals.success_message = req.flash("success_msg");
+  res.render("index", { message: res.locals.success_message });
+});
+```
+
+- require("express")로 Express 프레임워크와 require("connect-flash")로 connect-flash 미들웨어를 불러온다.
+- app.use(flash())는 connect-flash 미들웨어를 적용시킨다.
+- app.post("/", ...) 라우트는 HTTP POST 요청이 오면 req.flash("success_msg", "메시지가 성공적으로 저장되었습니다.")로 success_msg 플래시 메시지를 저장하고, res.redirect("/")로 응답을 전송한다.
+- app.get("/", ...) 라우트는 HTTP GET 요청이 오면 req.flash("success_msg")로 success_msg 플래시 메시지를 가져오고, res.locals.success_message에 저장한다. 그리고 res.render("index", { message: res.locals.success_message })로 "index" 템플릿에 success_message를 렌더링한다.
