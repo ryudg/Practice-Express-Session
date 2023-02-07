@@ -37,3 +37,52 @@ app.use(session({ secret: "secret" }));
 - `connect.sid` Express session 쿠키의 이름 (connect.session id)
 
 # `connect-flash`
+
+> **flash**는 임시적으로 저장되는 메시지를 의미.
+
+- flash 메시지는 세션에 저장되어 다음 요청에서 사용 가능한 임시 메시지이다.
+- 주로, 리다이렉트 후에 사용자에게 표시되는 한번짜리 정보 또는 오류 메시지를 저장하는데 사용되는데, 예를 들어, 등록이 성공적으로 완료되었음을 나타내는 flash 메시지를 한 라우트에서 설정한 다음, 다른 라우트에서 flash 메시지를 사용자에게 표시할 수 있다.
+- 이것은 여러 요청 사이에서 사용자와 통신할 수 있도록 해줌으로써 유용합니다.
+
+- connect-flash는 Express 프레임워크에서 플래시 메시지를 지원하는 미들웨어다.
+- 플래시 메시지는 세션에 일회용 정보 또는 오류 메시지를 저장하는 방법입니다. 재전송 후에 사용자에게 표시된다.
+  - 예를 들어, 등록 성공을 알리는 플래시 메시지를 한 경로에서 설정하고 다른 경로에서 플래시 메시지를 사용자에게 표시할 수 있다.
+  - 이는 사용자와 여러 요청 사이에 소통할 수 있게 해준다.
+- connect-flash는 Express 응용 프로그램에서 플래시 메시지를 쉽게 사용할 수 있도록 제공하기 때문에 사용된다.
+- 기본 세션 저장소 메커니즘을 추상화하고 플래시 메시지 설정, 검색, 지우기를 위한 간단한 인터페이스를 제공합니다.
+
+## 사용법
+
+```bash
+> npm i connect-flash
+```
+
+```javascript
+const express = require("express");
+const flash = require("connect-flash");
+const session = require("express-session");
+const app = express();
+
+app.use(session({ secret: "secret_key" }));
+app.use(flash());
+
+app.get("/flash", (req, res) => {
+  req.flash("success_msg", "This is a flash message");
+  res.redirect("/");
+});
+
+app.get("/", (req, res) => {
+  const success_msg = req.flash("success_msg");
+  res.render("index", { success_msg });
+});
+
+app.listen(3000, () => {
+  console.log("Example app listening on port 3000!");
+});
+```
+
+- 이 예제에서, connect-flash와 express-session 미들웨어가 불러와지고 "secret_key"를 키로 사용하여 사용된다.
+- 그리고 두 개의 경로가 생성.
+- 첫 번째 경로는 "success_msg" 키와 "This is a flash message" 값을 가진 flash 메시지를 설정.
+- 두 번째 경로에서는 flash 메시지를 검색하여 사용자에게 표시될 뷰 템플릿에 전달.
+- req.flash() 함수를 사용하여 flash 메시지를 가져옴.
