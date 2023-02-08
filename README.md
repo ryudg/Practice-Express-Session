@@ -89,6 +89,17 @@ app.listen(3000, () => {
 - connect-flash 미들웨어를 사용하면 req.flash 함수를 통해 플래시 메시지를 추가하고, res.locals 객체를 통해 플래시 메시지에 접근할 수 있다.
 
 ### `res.locals`
+> app.locals 
+> - 자바스크립트 객체이고, 프로퍼티들은 애플리케이션 내의 지역 변수들이다. 
+> - 애플리케이션의 라이프 타임 동안 유효하다.
+
+> req.app.locals
+> - 미들웨어에서 app의 지역 변수들을 사용할 수 있게 해준다.
+
+> res.locals
+> - res.locals의 프로퍼티들은 request의 라이프 타임 동안에만 유효하다.
+> - html/view 클라이언트 사이드로 변수들을 보낼 수 있으며, 그 변수들은 오로지 거기서만 사용할 수 있다.
+
 
 ```javascript
 const express = require("express");
